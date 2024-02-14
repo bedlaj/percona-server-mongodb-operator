@@ -1570,7 +1570,31 @@ func (r *ReconcilePerconaServerMongoDB) reconcileStatefulSet(
 			if name, err := replset.CustomReplsetName(); err == nil {
 				rsName = name
 			}
-			sfsSpec.Template.Spec.Containers = append(sfsSpec.Template.Spec.Containers, backup.AgentContainer(cr, rsName))
+			backupContainer := backup.AgentContainer(cr, rsName)
+
+			for storageName, storage := range cr.Spec.Backup.Storages {
+				if storage.Type == api.BackupStorageFilesystem {
+					hostPathType := corev1.HostPathDirectoryOrCreate
+					mountName := "backup-" + storageName
+					sfsSpec.Template.Spec.Volumes = append(sfsSpec.Template.Spec.Volumes,
+						corev1.Volume{
+							Name: mountName,
+							VolumeSource: corev1.VolumeSource{
+								HostPath: &corev1.HostPathVolumeSource{
+									Path: storage.Filesystem.Path,
+									Type: &hostPathType,
+								},
+							},
+						},
+					)
+					backupContainer.VolumeMounts = append(backupContainer.VolumeMounts, corev1.VolumeMount{
+						Name:      mountName,
+						MountPath: storage.Filesystem.Path,
+					})
+				}
+			}
+
+			sfsSpec.Template.Spec.Containers = append(sfsSpec.Template.Spec.Containers, backupContainer)
 		}
 
 		pmmC := psmdb.AddPMMContainer(ctx, cr, secret, cr.Spec.PMM.MongodParams)

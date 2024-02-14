@@ -745,6 +745,10 @@ type BackupStorageAzureSpec struct {
 	CredentialsSecret string `json:"credentialsSecret"`
 }
 
+type BackupStorageFilesystemSpec struct {
+	Path string `json:"path"`
+}
+
 type BackupStorageType string
 
 const (
@@ -754,9 +758,10 @@ const (
 )
 
 type BackupStorageSpec struct {
-	Type  BackupStorageType      `json:"type"`
-	S3    BackupStorageS3Spec    `json:"s3,omitempty"`
-	Azure BackupStorageAzureSpec `json:"azure,omitempty"`
+	Type       BackupStorageType           `json:"type"`
+	S3         BackupStorageS3Spec         `json:"s3,omitempty"`
+	Azure      BackupStorageAzureSpec      `json:"azure,omitempty"`
+	Filesystem BackupStorageFilesystemSpec `json:"filesystem,omitempty"`
 }
 
 type PITRSpec struct {

@@ -3,6 +3,7 @@ package backup
 import (
 	"context"
 	"fmt"
+	"github.com/percona/percona-backup-mongodb/pbm/storage/fs"
 	"net/url"
 	"os"
 	"strings"
@@ -291,7 +292,12 @@ func GetPBMConfig(ctx context.Context, k8sclient client.Client, cluster *api.Per
 			},
 		}
 	case api.BackupStorageFilesystem:
-		return conf, errors.New("filesystem backup storage not supported yet, skipping storage name")
+		conf.Storage = pbm.StorageConf{
+			Type: storage.Filesystem,
+			Filesystem: fs.Conf{
+				Path: stg.Filesystem.Path,
+			},
+		}
 	default:
 		return conf, errors.New("unsupported backup storage type")
 	}

@@ -240,7 +240,14 @@ spec:
                             prefix:
                               type: string
                           required:
-                          - credentialsSecret
+                            - credentialsSecret
+                          type: object
+                        filesystem:
+                          properties:
+                            path:
+                              type: string
+                          required:
+                            - path
                           type: object
                         s3:
                           properties:
