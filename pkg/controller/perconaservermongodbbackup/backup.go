@@ -52,7 +52,7 @@ func (b *Backup) Start(ctx context.Context, k8sclient client.Client, cluster *ap
 		return api.PerconaServerMongoDBBackupStatus{}, errors.Wrapf(err, "set backup config with storage %s", cr.Spec.StorageName)
 	}
 
-	name := time.Now().UTC().Format(time.RFC3339)
+	name := strings.Replace(time.Now().UTC().Format(time.RFC3339), ":", "-", -1)
 
 	var compLevel *int
 	if cr.Spec.CompressionLevel != nil {
