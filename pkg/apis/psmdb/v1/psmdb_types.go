@@ -746,7 +746,7 @@ type BackupStorageAzureSpec struct {
 }
 
 type BackupStorageFilesystemSpec struct {
-	Path string `json:"path"`
+	Volume *corev1.Volume `json:"volume"`
 }
 
 type BackupStorageType string

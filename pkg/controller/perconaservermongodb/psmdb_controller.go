@@ -1572,24 +1572,15 @@ func (r *ReconcilePerconaServerMongoDB) reconcileStatefulSet(
 			}
 			backupContainer := backup.AgentContainer(cr, rsName)
 
-			for storageName, storage := range cr.Spec.Backup.Storages {
+			for _, storage := range cr.Spec.Backup.Storages {
 				if storage.Type == api.BackupStorageFilesystem {
-					hostPathType := corev1.HostPathDirectoryOrCreate
-					mountName := "backup-" + storageName
+
 					sfsSpec.Template.Spec.Volumes = append(sfsSpec.Template.Spec.Volumes,
-						corev1.Volume{
-							Name: mountName,
-							VolumeSource: corev1.VolumeSource{
-								HostPath: &corev1.HostPathVolumeSource{
-									Path: storage.Filesystem.Path,
-									Type: &hostPathType,
-								},
-							},
-						},
+						*storage.Filesystem.Volume,
 					)
 					backupContainer.VolumeMounts = append(backupContainer.VolumeMounts, corev1.VolumeMount{
-						Name:      mountName,
-						MountPath: storage.Filesystem.Path,
+						Name:      "backup-" + storage.Filesystem.Volume.Name,
+						MountPath: "/backup/" + storage.Filesystem.Volume.Name,
 					})
 				}
 			}
