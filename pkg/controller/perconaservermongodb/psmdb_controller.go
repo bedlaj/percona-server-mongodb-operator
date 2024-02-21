@@ -1579,7 +1579,7 @@ func (r *ReconcilePerconaServerMongoDB) reconcileStatefulSet(
 					)
 					backupContainer.VolumeMounts = append(backupContainer.VolumeMounts, corev1.VolumeMount{
 						Name:      storage.Filesystem.Volume.Name,
-						MountPath: "/backup/" + storage.Filesystem.Volume.Name,
+						MountPath: "/tmp/backup/" + storage.Filesystem.Volume.Name,
 					})
 				}
 			}

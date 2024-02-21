@@ -295,7 +295,7 @@ func GetPBMConfig(ctx context.Context, k8sclient client.Client, cluster *api.Per
 		conf.Storage = pbm.StorageConf{
 			Type: storage.Filesystem,
 			Filesystem: fs.Conf{
-				Path: "/backup/" + stg.Filesystem.Volume.Name,
+				Path: "/tmp/backup/" + stg.Filesystem.Volume.Name,
 			},
 		}
 	default:
